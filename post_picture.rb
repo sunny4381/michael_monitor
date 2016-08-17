@@ -2,6 +2,10 @@ require 'dotenv'
 require 'koala'
 require 'rmagick'
 
+def to_gray(pixel)
+  (pixel.red * 0.30 + pixel.green * 0.59 + pixel.blue * 0.11).to_i
+end
+
 Dotenv.load
 
 facebook_api = Koala::Facebook::API.new(ENV['ACCESS_TOKEN'], ENV['SECRET'])
@@ -13,22 +17,13 @@ puts "#{file}: saved picture"
 img_list = Magick::ImageList.new(file)
 img = img_list.first
 
-sum_red = 0
-sum_green = 0
-sum_blue = 0
+sum_under = 0
 img.each_pixel do |pixel, x, y|
-  sum_red += pixel.red
-  sum_green += pixel.green
-  sum_blue += pixel.blue
+  sum_under += 1 if to_gray(pixel) < 10_000
 end
 
-avg_red = sum_red / (img.columns * img.rows)
-avg_green = sum_green / (img.columns * img.rows)
-avg_blue = sum_blue / (img.columns * img.rows)
-
-intensity = avg_red*0.30 + avg_green*0.59 + avg_blue*0.11
-
-if intensity < 10_000
+ratio_under = sum_under / (img.columns * img.rows).to_f
+if ratio_under >= 0.8
   puts "too under"
   FileUtils.remove_file(file)
   exit 0
