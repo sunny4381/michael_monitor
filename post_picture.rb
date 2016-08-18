@@ -6,7 +6,7 @@ def to_gray(pixel)
   (pixel.red * 0.30 + pixel.green * 0.59 + pixel.blue * 0.11).to_i
 end
 
-def sample_pixels(img, ratio = 20)
+def sample_pixels(img, ratio = 40)
   width = img.columns
   height = img.rows
 
