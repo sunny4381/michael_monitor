@@ -20,6 +20,7 @@ puts "次のURLにアクセスし code を取得してください\n#{client.aut
 puts "コードを入力してください:"
 code = STDIN.gets
 access_token = client.auth_code.get_token(code.strip, redirect_uri: callback_url)
+access_token!(/&.$/ '')
 
 # puts access token token
-puts "access_token: #{access_token.token}"
+puts "access_token:\n#{access_token.token}"
